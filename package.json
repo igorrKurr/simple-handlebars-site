@@ -1,0 +1,25 @@
+{
+  "name": "LoT",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "depemdencies": {},
+  "devDependencies": {
+    "grunt": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-qunit": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-concat-css": "latest",
+    "grunt-open": "latest",
+    "grunt-express": "latest",
+    "connect-livereload": "latest",
+    "grunt-contrib-htmlmin": "latest",
+    "grunt-contrib-handlebars": "latest"
+  }
+}
