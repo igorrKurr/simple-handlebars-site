@@ -1,17 +1,38 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    vendorJs: Object.keys(grunt.file.readJSON('bower.json').dependencies).map(
+      function(prodComponent) {
+          return 'vendor/**/' + prodComponent.replace(/\-/, '.') + "+(.min|-min).js";
+      }
+    ),
+    vendorCss: Object.keys(grunt.file.readJSON('bower.json').dependencies).map(
+      function(prodComponent) {
+          return 'vendor/**/' + prodComponent.replace(/\-/, '.') + ".css";
+      }
+    ),
     concat: {
       app: {
         src: ['app/js/**/*.js'],
         dest: 'build/app.js'
       },
-      assets: {
-        src: ['vendor/jquery/dist/jquery.min.js','vendor/handlebars/handlebars.runtime.min.js'],
+      assetsJs:{
+        options: {
+          stripBanners: {block:true}
+        },
+        src: '<%= vendorJs%>',
         dest: 'build/assets/assets.js'
       },
+      assetsCss: {
+        src: ['<%= vendorCss%>', 'vendor/**/font-awesome.css'],
+        dest: 'build/assets/assets.css'
+      },
+      styles: {
+        src: "app/styles/**/*.css",
+        dest: 'build/app.css'
+      },
       test: {
-        src: ['<%= concat.assets.dest%>', 'build/templates.js', '<%= concat.app.dest%>', ],
+        src: ['<%= concat.assetsJs.dest%>', 'build/templates.js', '<%= concat.app.dest%>', ],
         dest: 'test/app.js'
       }
     },
@@ -52,12 +73,6 @@ module.exports = function(grunt) {
           path: 'http://localhost:<%= express.all.options.port %>'
       }
     },
-    concat_css: {
-      all: {
-        src: ["app/styles/**/*.css"],
-        dest: "build/app.css"
-      },
-    },
     htmlmin: {
       dist: {
         options: {
@@ -81,6 +96,30 @@ module.exports = function(grunt) {
           "build/templates.js": ["app/templates/**/*.hbs"]
         }
       }
+    },
+    copy: {
+      font_awesome: {
+        expand: true,
+        flatten: true,
+        src: ['vendor/components-font-awesome/fonts/*'],
+        dest: 'build/assets/fonts'
+      },
+      app_fonts: {
+        expand: true,
+        flatten: true,
+        src: ['app/styles/fonts/*'],
+        dest: 'build/assets/fonts'
+      }
+    },
+    imagemin: {
+      dynamic: {
+        files: [{
+          expand: true,
+          cwd: 'app/images/',
+          src: ['**/*.{png,jpg,gif,jpeg}'],
+          dest: 'build/assets/images/'
+        }]
+      }
     }
   });
 
@@ -89,14 +128,16 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-qunit');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-concat-css');
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
   grunt.loadNpmTasks('grunt-express');
   grunt.loadNpmTasks('grunt-contrib-handlebars');
+  grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-contrib-imagemin');
+  grunt.loadNpmTasks('grunt-newer');
 
   grunt.registerTask('test', ['jshint', 'concat', 'qunit']);
-  grunt.registerTask('build', ['jshint', 'concat', 'handlebars', 'qunit','uglify', 'concat_css', 'htmlmin']);
+  grunt.registerTask('build', ['jshint', 'concat', 'copy', 'newer:imagemin', 'newer:handlebars', 'qunit', 'newer:uglify', 'newer:htmlmin']);
   grunt.registerTask('serve', ['build', 'express','open', 'watch']);
   grunt.registerTask('default', ['jshint', 'concat','qunit', 'uglify', 'concat_css']);
 };

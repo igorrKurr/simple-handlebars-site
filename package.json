@@ -20,6 +20,10 @@
     "grunt-express": "latest",
     "connect-livereload": "latest",
     "grunt-contrib-htmlmin": "latest",
-    "grunt-contrib-handlebars": "latest"
+    "grunt-contrib-handlebars": "latest",
+    "grunt-contrib-copy": "latest",
+    "imagemin": "latest",
+    "grunt-contrib-imagemin": "latest",
+    "grunt-newer": "latest"
   }
 }
