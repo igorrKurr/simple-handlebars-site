@@ -3,7 +3,8 @@
     "window",
     "location",
     "setTimeout",
-    "console"
+    "console",
+    "$"
     ],
     "node": true,
     "camelcase": true,

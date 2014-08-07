@@ -1,3 +1,6 @@
+  /*jshint camelcase: false */
+
+'use strict';
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -20,20 +23,17 @@ module.exports = function(grunt) {
         options: {
           stripBanners: {block:true}
         },
-        src: '<%= vendorJs%>',
+        src: '<%= vendorJs %>',
         dest: 'build/assets/assets.js'
-      },
-      assetsCss: {
-        src: ['<%= vendorCss%>', 'vendor/**/font-awesome.css'],
-        dest: 'build/assets/assets.css'
-      },
-      styles: {
-        src: "app/styles/**/*.css",
-        dest: 'build/app.css'
       },
       test: {
         src: ['<%= concat.assetsJs.dest%>', 'build/templates.js', '<%= concat.app.dest%>', ],
         dest: 'test/app.js'
+      }
+    },
+    wiredep: {
+      target: {
+        src: 'app/index.html'
       }
     },
     uglify: {
@@ -48,29 +48,40 @@ module.exports = function(grunt) {
     },
     jshint: {
       files: ['Gruntfile.js', 'app/js/**/*.js', 'test/**/*.js', '!test/app.js'],
-    },
-    watch: {
-      all: {
-        files: ['<%= jshint.files %>', 'app/index.html'],
-        tasks: 'build',
-        options: {
-          livereload: true
-        }
+      options: {
+        jshintrc: true
       }
     },
-    express: {
-      all:{
+    watch: {
+      options: {
+        livereload: 35729
+      },
+      all: {
+        files: ['<%= jshint.files %>', 'app/index.html', 'app/styles/*', 'app/templates/*'],
+        tasks: 'build'
+      },
+      bower: {
+        files: ['bower.json'],
+        tasks: 'wiredep'
+      }
+    },
+    connect: {
+      options: {
+        port: 9000,
+        livereload: 35729,
+        hostname: '0.0.0.0'
+      },
+      livereload: {
         options: {
-          port: 9000,
-          hostname: '0.0.0.0',
-          bases: 'build',
-          livereload: true
+          base: [
+            './'
+          ]
         }
       }
     },
     open: {
-      all: {
-          path: 'http://localhost:<%= express.all.options.port %>'
+      server: {
+        url: 'http://localhost:<%= connect.options.port %>/build/'
       }
     },
     htmlmin: {
@@ -98,17 +109,17 @@ module.exports = function(grunt) {
       }
     },
     copy: {
-      font_awesome: {
-        expand: true,
-        flatten: true,
-        src: ['vendor/components-font-awesome/fonts/*'],
-        dest: 'build/assets/fonts'
-      },
       app_fonts: {
         expand: true,
         flatten: true,
         src: ['app/styles/fonts/*'],
         dest: 'build/assets/fonts'
+      },
+      app:{
+        expand: true,
+        flatten: true,
+        src: ['app/index.html'],
+        dest: 'build/'
       }
     },
     imagemin: {
@@ -120,6 +131,13 @@ module.exports = function(grunt) {
           dest: 'build/assets/images/'
         }]
       }
+    },
+    concat_css: {
+      app: {
+        files: {
+          'build/app.css':['app/styles/**/*.css']
+        }
+      }
     }
   });
 
@@ -130,14 +148,16 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-open');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
-  grunt.loadNpmTasks('grunt-express');
   grunt.loadNpmTasks('grunt-contrib-handlebars');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-imagemin');
   grunt.loadNpmTasks('grunt-newer');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-concat-css');
+  grunt.loadNpmTasks('grunt-wiredep');
 
   grunt.registerTask('test', ['jshint', 'concat', 'qunit']);
-  grunt.registerTask('build', ['jshint', 'concat', 'copy', 'newer:imagemin', 'newer:handlebars', 'qunit', 'newer:uglify', 'newer:htmlmin']);
-  grunt.registerTask('serve', ['build', 'express','open', 'watch']);
+  grunt.registerTask('build', ['jshint', 'wiredep', 'concat', 'concat_css', 'copy', 'newer:imagemin', 'newer:handlebars', 'qunit', 'newer:uglify', 'newer:htmlmin']);
+  grunt.registerTask('serve', ['build', 'connect', 'open', 'watch']);
   grunt.registerTask('default', ['jshint', 'concat','qunit', 'uglify', 'concat_css']);
 };

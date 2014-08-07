@@ -1,6 +1,6 @@
 {
-  "name": "factory-bot",
-  "version": "0.0.0",
+  "name": "Lot",
+  "version": "0.0.1",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -13,7 +13,6 @@
     "jquery": "latest",
     "jquery-mmenu": "latest",
     "jquery-colorbox": "latest",
-    "components-font-awesome": "latest",
-    "jqueryui": "latest"
+    "components-font-awesome": "latest"
   }
 }

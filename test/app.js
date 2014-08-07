@@ -15,11 +15,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", stack1, helper, functionType="function", escapeExpression=this.escapeExpression;
 
 
-  buffer += "<h1>";
+  buffer += "<h1><i>";
   if (helper = helpers.name) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.name); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "</h1>";
+    + "</i></h1>\n<i class=\"fa fa-camera-retro\"></i>";
   return buffer;
   });
 /*jshint sub:true*/
@@ -29,5 +29,5 @@ var renderTemplate = function(templateName, data) {
   $('body').append(LoT.Templates[templateName](data));
 };
 
-var data = {name: "Oleg"};
+var data = {name: "Olekkkg"};
 renderTemplate('index', data);

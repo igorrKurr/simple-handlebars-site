@@ -1,6 +1,6 @@
 {
   "name": "LoT",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,13 +17,15 @@
     "grunt-contrib-concat": "latest",
     "grunt-concat-css": "latest",
     "grunt-open": "latest",
-    "grunt-express": "latest",
     "connect-livereload": "latest",
     "grunt-contrib-htmlmin": "latest",
     "grunt-contrib-handlebars": "latest",
     "grunt-contrib-copy": "latest",
     "imagemin": "latest",
     "grunt-contrib-imagemin": "latest",
-    "grunt-newer": "latest"
+    "grunt-newer": "latest",
+    "grunt-contrib-connect": "latest",
+    "grunt-concat-css": "latest",
+    "grunt-wiredep": "latest"
   }
 }
