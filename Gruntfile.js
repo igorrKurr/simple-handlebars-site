@@ -73,15 +73,18 @@ module.exports = function(grunt) {
       },
       livereload: {
         options: {
-          base: [
-            './'
-          ]
+          middleware: function(connect) {
+            return [
+              connect().use('/vendor', connect.static('./vendor')),
+              connect.static('build/')
+            ];
+          }
         }
       }
     },
     open: {
       server: {
-        url: 'http://localhost:<%= connect.options.port %>/build/'
+        url: 'http://localhost:<%= connect.options.port %>'
       }
     },
     htmlmin: {
@@ -157,7 +160,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-wiredep');
 
   grunt.registerTask('test', ['jshint', 'concat', 'qunit']);
-  grunt.registerTask('build', ['jshint', 'wiredep', 'concat', 'concat_css', 'copy', 'newer:imagemin', 'newer:handlebars', 'qunit', 'newer:uglify', 'newer:htmlmin']);
+  grunt.registerTask('build', ['jshint', 'wiredep', 'concat', 'concat_css', 'copy', 'newer:imagemin', 'newer:handlebars', 'newer:uglify', 'newer:htmlmin']);
   grunt.registerTask('serve', ['build', 'connect', 'open', 'watch']);
   grunt.registerTask('default', ['jshint', 'concat','qunit', 'uglify', 'concat_css']);
 };
